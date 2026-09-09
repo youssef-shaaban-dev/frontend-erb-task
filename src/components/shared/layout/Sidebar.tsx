@@ -1,0 +1,63 @@
+import {
+  LayoutDashboard,
+  FileText,
+  Package,
+  Users,
+  BarChart2,
+  HelpCircle,
+  Building2
+} from "lucide-react";
+import { SidebarItem } from "./SidebarItem";
+
+const menuItems = [
+  { href: "/dashboard", label: "لوحة التحكم", icon: LayoutDashboard },
+  { href: "/invoices", label: "الفواتير", icon: FileText, isActive: true }, // Set active for now
+  { href: "/inventory", label: "المخزون", icon: Package },
+  { href: "/customers", label: "العملاء", icon: Users },
+  { href: "/reports", label: "التقارير", icon: BarChart2 },
+];
+
+export function Sidebar() {
+  return (
+    <aside className="w-64 bg-white border-l border-gray-200 flex flex-col h-full shrink-0">
+      {/* Logo / Header Area */}
+      <div className="h-20 flex items-center px-6 border-b border-gray-200">
+        <div className="flex items-center gap-3 text-blue-700">
+          <div className="p-2 bg-blue-50 rounded-lg">
+            <Building2 className="w-6 h-6" />
+          </div>
+          <div>
+            <h1 className="font-bold text-lg">إدارة الموارد</h1>
+            <p className="text-xs text-gray-500">المؤسسة العربية</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Navigation */}
+      <nav className="flex-1 py-6 px-4">
+        <ul className="space-y-1">
+          {menuItems.map((item) => (
+            <SidebarItem
+              key={item.href}
+              href={item.href}
+              label={item.label}
+              icon={item.icon}
+              isActive={item.isActive}
+            />
+          ))}
+        </ul>
+      </nav>
+
+      {/* Footer Navigation */}
+      <div className="p-4 border-t border-gray-200">
+        <ul className="space-y-1">
+          <SidebarItem
+            href="/help"
+            label="المساعدة"
+            icon={HelpCircle}
+          />
+        </ul>
+      </div>
+    </aside>
+  );
+}
