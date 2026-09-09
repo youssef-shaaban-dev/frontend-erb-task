@@ -7,8 +7,8 @@ import {
   HelpCircle,
   Building2
 } from "lucide-react";
-import { SidebarItem } from "./SidebarItem";
 import { APP_ROUTES } from "@/config/routes";
+import { SidebarItem } from "./SidebarItem";
 
 const menuItems = [
   { href: APP_ROUTES.DASHBOARD, label: "لوحة التحكم", icon: LayoutDashboard },
@@ -22,9 +22,9 @@ export function Sidebar() {
   return (
     <aside className="w-64 bg-white border-l border-gray-200 flex flex-col h-full shrink-0">
       {/* Logo / Header Area */}
-      <div className="h-20 flex items-center px-6 border-b border-gray-200">
-        <div className="flex items-center gap-3 text-blue-700">
-          <div className="p-2 bg-blue-50 rounded-lg">
+      <div className="h-20 flex items-center px-6 border-b border-border">
+        <div className="flex items-center gap-3 text-primary">
+          <div className="p-2 bg-primary/10 rounded-lg">
             <Building2 className="w-6 h-6" />
           </div>
           <div>
