@@ -82,15 +82,27 @@ export function Step2ItemsTable() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {fields.map((field, index) => (
-                <Step2ItemRow
-                  key={field.id}
-                  index={index}
-                  fieldId={field.id}
-                  onRemove={() => remove(index)}
-                  canRemove={fields.length > 1}
-                />
-              ))}
+              {fields.length === 0 ? (
+                <TableRow>
+                  <td colSpan={9} className="h-48 text-center bg-muted/5">
+                    <div className="flex flex-col items-center justify-center text-muted-foreground">
+                      <Box className="w-12 h-12 mb-3 text-muted-foreground/30" />
+                      <p className="text-lg font-medium mb-1">لا توجد بنود</p>
+                      <p className="text-sm">قم بإضافة سطر جديد أو مسح باركود لإضافة منتجات</p>
+                    </div>
+                  </td>
+                </TableRow>
+              ) : (
+                fields.map((field, index) => (
+                  <Step2ItemRow
+                    key={field.id}
+                    index={index}
+                    fieldId={field.id}
+                    onRemove={() => remove(index)}
+                    canRemove={fields.length > 0}
+                  />
+                ))
+              )}
             </TableBody>
           </Table>
         </div>

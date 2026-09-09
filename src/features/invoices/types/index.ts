@@ -58,6 +58,7 @@ export interface Step3Approval {
 
 
 export interface InvoiceData extends Step1BasicInfo, Step2Items, Step3Approval {
+  id?: string;
   status: InvoiceStatus;
   lastSaved?: string;
 }

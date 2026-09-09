@@ -1,8 +1,9 @@
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useInvoiceStore } from "../../store/useInvoiceStore";
+import { shouldSkipStep } from "../../engine/ruleEngine";
 
-const STEPS = [
+const ALL_STEPS = [
   { id: 1, label: "البيانات الأساسية" },
   { id: 2, label: "بنود الفاتورة" },
   { id: 3, label: "التكلفة و الاعتماد" },
@@ -10,7 +11,20 @@ const STEPS = [
 ];
 
 export function WizardStepper() {
-  const { currentStep } = useInvoiceStore();
+  const { currentStep, invoiceData } = useInvoiceStore();
+
+  // Filter out skipped steps
+  const visibleSteps = ALL_STEPS.filter((step) => {
+    if (step.id === 3 && shouldSkipStep("cost-approval", invoiceData)) {
+      return false;
+    }
+    return true;
+  });
+
+  const currentIndex = visibleSteps.findIndex((s) => s.id === currentStep);
+  const progressPercentage = visibleSteps.length > 1
+    ? (currentIndex / (visibleSteps.length - 1)) * 100
+    : 0;
 
   return (
     <div className="w-full py-6">
@@ -21,12 +35,12 @@ export function WizardStepper() {
         {/* Progress Line (Active) */}
         <div 
           className="absolute top-1/2 right-0 h-0.5 bg-primary transition-all duration-300 ease-in-out -translate-y-1/2 z-0"
-          style={{ width: `${((currentStep - 1) / (STEPS.length - 1)) * 100}%` }}
+          style={{ width: `${progressPercentage}%` }}
         />
 
-        {STEPS.map((step) => {
-          const isCompleted = step.id < currentStep;
-          const isActive = step.id === currentStep;
+        {visibleSteps.map((step, index) => {
+          const isCompleted = index < currentIndex;
+          const isActive = index === currentIndex;
 
           return (
             <div key={step.id} className="relative z-10 flex flex-col items-center gap-2 bg-[#f9fafb] px-4">

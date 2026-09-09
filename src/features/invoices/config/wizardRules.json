@@ -1,0 +1,103 @@
+{
+  "steps": [
+    {
+      "id": "basic-info",
+      "title": "البيانات الأساسية",
+      "order": 1,
+      "alwaysVisible": true
+    },
+    {
+      "id": "invoice-items",
+      "title": "بنود الفاتورة",
+      "order": 2,
+      "alwaysVisible": true
+    },
+    {
+      "id": "cost-approval",
+      "title": "التكلفة و الاعتماد",
+      "order": 3,
+      "alwaysVisible": true,
+      "dynamicFields": {
+        "costCenter": {
+          "requiredWhen": {
+            "field": "total",
+            "operator": "greaterThan",
+            "value": 50000
+          }
+        },
+        "department": {
+          "requiredWhen": {
+            "field": "total",
+            "operator": "greaterThan",
+            "value": 50000
+          }
+        },
+        "manager": {
+          "requiredWhen": {
+            "field": "total",
+            "operator": "greaterThan",
+            "value": 50000
+          }
+        }
+      },
+      "skipWhen": {
+        "field": "type",
+        "operator": "equals",
+        "value": "Cash"
+      }
+    },
+    {
+      "id": "review",
+      "title": "المراجعة والإصدار",
+      "order": 4,
+      "alwaysVisible": true
+    }
+  ],
+  "fieldRules": [
+    {
+      "id": "due-date-required",
+      "targetField": "dueDate",
+      "rule": {
+        "field": "type",
+        "operator": "equals",
+        "value": "Credit"
+      },
+      "action": "required",
+      "message": "تاريخ الاستحقاق مطلوب في حالة الدفع الآجل"
+    },
+    {
+      "id": "due-date-max-30",
+      "targetField": "dueDate",
+      "rule": {
+        "field": "type",
+        "operator": "equals",
+        "value": "Credit"
+      },
+      "action": "maxDaysFromInvoiceDate",
+      "value": 30,
+      "message": "تاريخ الاستحقاق يتجاوز الحد الأقصى المسموح به للدفع الآجل (30 يوماً)"
+    },
+    {
+      "id": "approval-required",
+      "targetField": "step:cost-approval",
+      "rule": {
+        "field": "total",
+        "operator": "greaterThan",
+        "value": 50000
+      },
+      "action": "mandatory",
+      "message": "يتطلب الأمر تحديد مركز تكلفة وقسم لغرض الاعتماد الإداري"
+    },
+    {
+      "id": "tax-fields-required",
+      "targetField": "taxPercent",
+      "rule": {
+        "field": "hasTaxableItems",
+        "operator": "equals",
+        "value": true
+      },
+      "action": "required",
+      "message": "حقول الضريبة مطلوبة للأصناف الخاضعة للضريبة"
+    }
+  ]
+}

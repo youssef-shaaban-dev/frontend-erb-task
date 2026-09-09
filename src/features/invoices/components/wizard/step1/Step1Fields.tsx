@@ -34,13 +34,12 @@ export function Step1Fields() {
 
   const invoiceDate = watchedValues.invoiceDate;
   const dueDate = watchedValues.dueDate;
-  const isOver90Days =
-    invoiceDate && dueDate && differenceInDays(dueDate, invoiceDate) > 90;
+  const isOver30Days =
+    invoiceDate && dueDate && differenceInDays(dueDate, invoiceDate) > 30;
 
   return (
     <>
       <div className="grid grid-cols-2 gap-6">
-        {/* Invoice Number (Right in RTL) */}
         <FormField
           control={control}
           name="invoiceNumber"
@@ -187,7 +186,7 @@ export function Step1Fields() {
           name="dueDate"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel className={cn(isOver90Days && "text-destructive")}>
+              <FormLabel className={cn(isOver30Days && "text-destructive")}>
                 تاريخ الاستحقاق
               </FormLabel>
               <Popover>
@@ -198,7 +197,7 @@ export function Step1Fields() {
                       "border-border bg-background hover:bg-muted hover:text-foreground", // outline variant
                       "w-full text-right font-normal",
                       !field.value && "text-muted-foreground",
-                      isOver90Days &&
+                      isOver30Days &&
                         "border-destructive text-destructive bg-destructive/5"
                     )}
                   >
@@ -218,10 +217,10 @@ export function Step1Fields() {
                   />
                 </PopoverContent>
               </Popover>
-              {isOver90Days && (
+              {isOver30Days && (
                 <p className="text-xs text-destructive flex items-center mt-1">
                   <AlertCircle className="w-3 h-3 ml-1" />
-                  تاريخ الاستحقاق يتجاوز الحد الأقصى المسموح به للدفع الآجل (90
+                  تاريخ الاستحقاق يتجاوز الحد الأقصى المسموح به للدفع الآجل (30
                   يوماً).
                 </p>
               )}

@@ -1,8 +1,9 @@
 import { useEffect, useRef } from "react";
 import { useInvoiceStore } from "../store/useInvoiceStore";
+import { invoiceApi, ApiError } from "../api/client";
 
 export function useAutoSave() {
-  const { invoiceData, setSavingStatus } = useInvoiceStore();
+  const { invoiceData, setSavingStatus, updateInvoiceData } = useInvoiceStore();
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prevDataRef = useRef(invoiceData);
 
@@ -14,11 +15,23 @@ export function useAutoSave() {
       clearTimeout(timeoutRef.current);
     }
 
-    timeoutRef.current = setTimeout(() => {
+    timeoutRef.current = setTimeout(async () => {
       setSavingStatus(true);
-      setTimeout(() => {
+      try {
+        const result = await invoiceApi.saveDraft(invoiceData);
+        // If it's a new draft, it gets an ID from the backend
+        if (!invoiceData.id && result.id) {
+          updateInvoiceData({ id: result.id });
+        }
         setSavingStatus(false);
-      }, 800);
+      } catch (error) {
+        if (error instanceof ApiError && error.status === 409) {
+          // Handle 409 conflict
+          setSavingStatus(false, "يوجد تعارض: تم تعديل هذه الفاتورة من مكان آخر.");
+        } else {
+          setSavingStatus(false, "حدث خطأ أثناء الحفظ التلقائي.");
+        }
+      }
     }, 2000);
 
     return () => {
@@ -26,5 +39,5 @@ export function useAutoSave() {
         clearTimeout(timeoutRef.current);
       }
     };
-  }, [invoiceData, setSavingStatus]);
+  }, [invoiceData, setSavingStatus, updateInvoiceData]);
 }

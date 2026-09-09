@@ -31,10 +31,12 @@ export function InvoiceWizard() {
           </div>
         )}
 
-        {currentStep === 1 && <Step1Form />}
-        {currentStep === 2 && <Step2Form />}
-        {currentStep === 3 && <Step3Form />}
-        {currentStep === 4 && <Step4Review />}
+        <div key={currentStep} className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+          {currentStep === 1 && <Step1Form />}
+          {currentStep === 2 && <Step2Form />}
+          {currentStep === 3 && <Step3Form />}
+          {currentStep === 4 && <Step4Review />}
+        </div>
 
         <div className="flex items-center justify-between mt-8 pt-6 border-t border-border">
           <div>

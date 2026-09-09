@@ -34,7 +34,7 @@ export function AutoSaveIndicator() {
     return (
       <div className="flex items-center gap-1.5 text-destructive text-sm">
         <XCircle className="w-4 h-4" />
-        <span>خطأ في الحفظ</span>
+        <span>{typeof saveError === 'string' ? saveError : 'خطأ في الحفظ'}</span>
         {invoiceData.invoiceNumber && (
           <span className="text-muted-foreground mr-2">{invoiceData.invoiceNumber}</span>
         )}
