@@ -5,6 +5,7 @@ import { WizardStepper } from "./WizardStepper";
 import { useInvoiceStore } from "../../store/useInvoiceStore";
 import { Button } from "@/components/ui/button";
 import { Step1Form } from "./Step1Form";
+import { Step2Form } from "./Step2Form";
 
 export function InvoiceWizard() {
   const { currentStep, prevStep, nextStep } = useInvoiceStore();
@@ -21,7 +22,8 @@ export function InvoiceWizard() {
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-8 min-h-100">
         
         {currentStep === 1 && <Step1Form />}
-        {currentStep > 1 && (
+        {currentStep === 2 && <Step2Form />}
+        {currentStep > 2 && (
           <div className="flex items-center justify-center h-full text-muted-foreground border-2 border-dashed border-border rounded-lg p-12">
             محتوى الخطوة رقم {currentStep} سيتم إضافته هنا
           </div>
@@ -40,7 +42,7 @@ export function InvoiceWizard() {
           }
 
           <div className={`flex gap-3 w-full ${
-            currentStep > 1 ? "justify-between" : "justify-end"
+            currentStep > 1 ? "justify-end" : "justify-end"
           }`}>
             <Button variant="outline">
               إلغاء
