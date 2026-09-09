@@ -55,6 +55,10 @@ export function Step4Summary() {
   }, 0);
   const finalTotal = subtotalAfterDiscount + totalTax;
 
+  // Calculate effective discount and tax percentages
+  const discountPercent = subtotal > 0 ? Math.round((totalDiscount / subtotal) * 100) : 0;
+  const taxPercent = subtotalAfterDiscount > 0 ? Math.round((totalTax / subtotalAfterDiscount) * 100) : 0;
+
   const formatCurrency = (val: number) =>
     new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(val);
 
@@ -174,18 +178,18 @@ export function Step4Summary() {
           </div>
 
           {/* Totals Box */}
-          <div className="p-6 bg-background flex justify-end">
+          <div className="p-6 bg-background flex justify-start">
             <div className="w-full sm:w-80 border border-border rounded-xl p-5 space-y-4">
               <div className="flex justify-between items-center text-sm">
                 <span className="text-muted-foreground">المجموع الفرعي</span>
                 <span className="font-medium">{formatCurrency(subtotal)}</span>
               </div>
               <div className="flex justify-between items-center text-sm">
-                <span className="text-destructive font-medium">الخصم</span>
+                <span className="text-destructive font-medium">الخصم ({discountPercent}٪)</span>
                 <span className="text-destructive font-medium">- {formatCurrency(totalDiscount)}</span>
               </div>
               <div className="flex justify-between items-center text-sm">
-                <span className="text-muted-foreground">ضريبة القيمة المضافة</span>
+                <span className="text-muted-foreground">ضريبة القيمة المضافة ({taxPercent}٪)</span>
                 <span className="font-medium">{formatCurrency(totalTax)}</span>
               </div>
               
