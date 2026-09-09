@@ -14,6 +14,14 @@ export const INVOICE_STATUSES = {
 
 export type InvoiceStatus = typeof INVOICE_STATUSES[keyof typeof INVOICE_STATUSES];
 
+export interface Attachment {
+  id: string;
+  name: string;
+  size: number;
+  type: string;
+  url?: string;
+  file?: File;
+}
 
 export interface Step1BasicInfo {
   invoiceNumber: string;
@@ -44,7 +52,8 @@ export interface Step3Approval {
   costCenterId?: string;
   departmentId?: string;
   approvalReason?: string;
-  approverId?: string;
+  managerId?: string;
+  attachments?: Attachment[];
 }
 
 

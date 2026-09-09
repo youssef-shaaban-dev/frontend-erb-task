@@ -6,6 +6,7 @@ import { useInvoiceStore } from "../../store/useInvoiceStore";
 import { Button } from "@/components/ui/button";
 import { Step1Form } from "./Step1Form";
 import { Step2Form } from "./Step2Form";
+import { Step3Form } from "./Step3Form";
 
 export function InvoiceWizard() {
   const { currentStep, prevStep, nextStep } = useInvoiceStore();
@@ -23,7 +24,8 @@ export function InvoiceWizard() {
         
         {currentStep === 1 && <Step1Form />}
         {currentStep === 2 && <Step2Form />}
-        {currentStep > 2 && (
+        {currentStep === 3 && <Step3Form />}
+        {currentStep > 3 && (
           <div className="flex items-center justify-center h-full text-muted-foreground border-2 border-dashed border-border rounded-lg p-12">
             محتوى الخطوة رقم {currentStep} سيتم إضافته هنا
           </div>
@@ -48,9 +50,9 @@ export function InvoiceWizard() {
               إلغاء
             </Button>
             <Button 
-              type={currentStep <= 2 ? "submit" : "button"}
-              form={currentStep <= 2 ? `step${currentStep}-form` : undefined}
-              onClick={currentStep > 2 ? nextStep : undefined}
+              type={currentStep <= 3 ? "submit" : "button"}
+              form={currentStep <= 3 ? `step${currentStep}-form` : undefined}
+              onClick={currentStep > 3 ? nextStep : undefined}
             >
               {currentStep === 4 ? "إصدار الفاتورة" : "الخطوة التالية"}
             </Button>
