@@ -29,7 +29,7 @@ import { Step1FormValues } from "../../../schemas/step1Schema";
 import { INVOICE_TYPES } from "../../../types";
 
 export function Step1Fields() {
-  const { control } = useFormContext<Step1FormValues>();
+  const { control, formState } = useFormContext<Step1FormValues>();
   const watchedValues = useWatch({ control });
 
   const invoiceDate = watchedValues.invoiceDate;
@@ -225,7 +225,11 @@ export function Step1Fields() {
                   يوماً).
                 </p>
               )}
-              <FormMessage />
+              {formState.errors.dueDate && (
+                <p className="text-[0.8rem] font-medium text-destructive mt-1">
+                  {String(formState.errors.dueDate.message)}
+                </p>
+              )}
             </FormItem>
           )}
         />

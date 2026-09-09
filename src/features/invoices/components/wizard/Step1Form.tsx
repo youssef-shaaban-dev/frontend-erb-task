@@ -65,7 +65,13 @@ export function Step1Form() {
 
       <FormProvider {...form}>
         <Form {...form}>
-          <form className="space-y-6">
+          <form
+            id="step1-form"
+            className="space-y-6"
+            onSubmit={form.handleSubmit(() => {
+              useInvoiceStore.getState().nextStep();
+            })}
+          >
             <FormSync />
             <Step1Fields />
           </form>

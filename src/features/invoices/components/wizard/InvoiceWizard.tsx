@@ -47,7 +47,11 @@ export function InvoiceWizard() {
             <Button variant="outline">
               إلغاء
             </Button>
-            <Button onClick={nextStep}>
+            <Button 
+              type={currentStep <= 2 ? "submit" : "button"}
+              form={currentStep <= 2 ? `step${currentStep}-form` : undefined}
+              onClick={currentStep > 2 ? nextStep : undefined}
+            >
               {currentStep === 4 ? "إصدار الفاتورة" : "الخطوة التالية"}
             </Button>
           </div>
