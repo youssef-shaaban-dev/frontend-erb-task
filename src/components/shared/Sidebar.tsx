@@ -22,10 +22,10 @@ export function Sidebar() {
   return (
     <aside className="w-64 bg-white border-l border-gray-200 flex flex-col h-full shrink-0">
       {/* Logo / Header Area */}
-      <div className="h-20 flex items-center px-6 border-b border-border">
-        <div className="flex items-center gap-3 text-primary">
+      <div className="h-20 flex items-center px-6 border-b border-border ">
+        <div className="flex items-center gap-3 text-primary ">
           <div className="p-2 bg-primary/10 rounded-lg">
-            <Building2 className="w-6 h-6" />
+            <Building2 className="w-6 h-6 text-white" />
           </div>
           <div>
             <h1 className="font-bold text-lg">إدارة الموارد</h1>
