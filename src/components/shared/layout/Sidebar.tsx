@@ -8,13 +8,14 @@ import {
   Building2
 } from "lucide-react";
 import { SidebarItem } from "./SidebarItem";
+import { APP_ROUTES } from "@/config/routes";
 
 const menuItems = [
-  { href: "/dashboard", label: "لوحة التحكم", icon: LayoutDashboard },
-  { href: "/invoices", label: "الفواتير", icon: FileText, isActive: true }, // Set active for now
-  { href: "/inventory", label: "المخزون", icon: Package },
-  { href: "/customers", label: "العملاء", icon: Users },
-  { href: "/reports", label: "التقارير", icon: BarChart2 },
+  { href: APP_ROUTES.DASHBOARD, label: "لوحة التحكم", icon: LayoutDashboard },
+  { href: APP_ROUTES.INVOICES, label: "الفواتير", icon: FileText, isActive: true }, // Set active for now
+  { href: APP_ROUTES.INVENTORY, label: "المخزون", icon: Package },
+  { href: APP_ROUTES.CUSTOMERS, label: "العملاء", icon: Users },
+  { href: APP_ROUTES.REPORTS, label: "التقارير", icon: BarChart2 },
 ];
 
 export function Sidebar() {
@@ -52,7 +53,7 @@ export function Sidebar() {
       <div className="p-4 border-t border-gray-200">
         <ul className="space-y-1">
           <SidebarItem
-            href="/help"
+            href={APP_ROUTES.HELP}
             label="المساعدة"
             icon={HelpCircle}
           />

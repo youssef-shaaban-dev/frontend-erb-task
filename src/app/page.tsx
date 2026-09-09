@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
+import { APP_ROUTES } from "@/config/routes";
 
 export default function Home() {
-  redirect("/invoices");
+  redirect(APP_ROUTES.INVOICES);
 }
 
