@@ -154,9 +154,9 @@ export function Step1Fields() {
                 <FormControl>
                   <PopoverTrigger
                     className={cn(
-                      "inline-flex items-center justify-center rounded-lg border border-transparent whitespace-nowrap transition-all outline-none select-none h-8 gap-1.5 px-2.5",
+                      "inline-flex items-center justify-center rounded-lg border border-transparent whitespace-nowrap transition-all outline-none select-none h-10 gap-1.5 px-3",
                       "border-border bg-background hover:bg-muted hover:text-foreground", // outline variant
-                      "w-full pl-3 text-right font-normal",
+                      "w-full text-right font-normal",
                       !field.value && "text-muted-foreground"
                     )}
                   >
@@ -194,9 +194,9 @@ export function Step1Fields() {
                 <FormControl>
                   <PopoverTrigger
                     className={cn(
-                      "inline-flex items-center justify-center rounded-lg border border-transparent whitespace-nowrap transition-all outline-none select-none h-8 gap-1.5 px-2.5",
+                      "inline-flex items-center justify-center rounded-lg border border-transparent whitespace-nowrap transition-all outline-none select-none h-10 gap-1.5 px-3",
                       "border-border bg-background hover:bg-muted hover:text-foreground", // outline variant
-                      "w-full pl-3 text-right font-normal",
+                      "w-full text-right font-normal",
                       !field.value && "text-muted-foreground",
                       isOver90Days &&
                         "border-destructive text-destructive bg-destructive/5"
