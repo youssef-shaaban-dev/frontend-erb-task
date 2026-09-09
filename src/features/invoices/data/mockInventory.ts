@@ -1,5 +1,6 @@
 export interface Product {
   id: string;
+  sku: string;
   name: string;
   price: number;
   availableStock: number;
@@ -9,28 +10,24 @@ export interface Product {
 export const mockInventory: Product[] = [
   {
     id: "ITM-001",
-    name: "أجهزة حاسب آلي",
-    price: 3500.00,
-    availableStock: 3,
+    sku: "LPT-PRO-15",
+    name: "جهاز حاسب آلي محمول - فئة الأعمال",
+    price: 3450.00,
+    availableStock: 45,
     taxPercent: 15,
   },
   {
     id: "ITM-002",
-    name: "تراخيص برمجيات",
+    sku: "PRN-LZ-M2",
+    name: "طابعة ليزر متعددة المهام",
     price: 1200.00,
-    availableStock: 50,
+    availableStock: 5,
     taxPercent: 15,
   },
   {
     id: "ITM-003",
-    name: "خدمات دعم فني (ساعة)",
-    price: 150.00,
-    availableStock: 999, // unlimited essentially
-    taxPercent: 15,
-  },
-  {
-    id: "ITM-004",
-    name: "خوادم شبكات",
+    sku: "SRV-RACK-1U",
+    name: "خادم شبكات",
     price: 12000.00,
     availableStock: 1,
     taxPercent: 15,

@@ -3,6 +3,7 @@ import { z } from "zod";
 export const invoiceItemSchema = z.object({
   id: z.string(), 
   itemId: z.string().min(1, "يجب اختيار الصنف"),
+  sku: z.string().optional(),
   name: z.string(),
   quantity: z.number().min(1, "الكمية يجب أن تكون 1 على الأقل"),
   price: z.number().min(0, "السعر لا يمكن أن يكون سالباً"),

@@ -15,13 +15,14 @@ export function Step2Summary() {
       const t = Number(item.taxPercent) || 0;
 
       const subtotal = q * p;
-      const taxableAmount = Math.max(0, subtotal - d);
+      const discountAmount = subtotal * (d / 100);
+      const taxableAmount = Math.max(0, subtotal - discountAmount);
       const tax = taxableAmount * (t / 100);
       const total = taxableAmount + tax;
 
       return {
         subtotal: acc.subtotal + subtotal,
-        discount: acc.discount + d,
+        discount: acc.discount + discountAmount,
         tax: acc.tax + tax,
         final: acc.final + total,
       };
@@ -31,39 +32,43 @@ export function Step2Summary() {
 
   return (
     <div className="mt-8 flex justify-end">
-      <div className="w-87.5 bg-muted/30 p-6 rounded-lg border border-border space-y-4">
-        <h3 className="font-bold text-lg mb-4">ملخص الفاتورة</h3>
-
-        <div className="flex justify-between text-sm">
-          <span className="text-muted-foreground">الإجمالي قبل الضريبة</span>
-          <span className="font-medium">
+      <div className="w-[400px] p-2 space-y-5">
+        <div className="flex justify-between items-center text-sm">
+          <span className="text-muted-foreground font-medium">المجموع الفرعي:</span>
+          <span className="font-medium text-foreground">
             {totals.subtotal.toLocaleString("ar-SA", {
               minimumFractionDigits: 2,
-            })}
+            })} ر.س
           </span>
         </div>
 
-        <div className="flex justify-between text-sm">
-          <span className="text-muted-foreground">إجمالي الخصم</span>
-          <span className="font-medium text-destructive">
-            {totals.discount.toLocaleString("ar-SA", {
+        <div className="flex justify-between items-center text-sm border-b border-border/50 pb-5 border-dashed">
+          <span className="text-muted-foreground font-medium">إجمالي الخصومات:</span>
+          <span className="font-medium text-foreground">
+            - {totals.discount.toLocaleString("ar-SA", {
               minimumFractionDigits: 2,
-            })}
+            })} ر.س
           </span>
         </div>
 
-        <div className="flex justify-between text-sm">
-          <span className="text-muted-foreground">إجمالي الضريبة (15%)</span>
-          <span className="font-medium">
-            {totals.tax.toLocaleString("ar-SA", { minimumFractionDigits: 2 })}
+        <div className="flex justify-between items-center text-sm pt-2 border-b border-border/50 pb-5 border-dashed">
+          <div className="flex items-center gap-2">
+            <span className="text-muted-foreground font-medium">ضريبة القيمة المضافة</span>
+            <span className="bg-muted px-2 py-0.5 rounded text-xs font-medium text-muted-foreground">15%</span>
+          </div>
+          <span className="font-medium text-foreground">
+            {totals.tax.toLocaleString("ar-SA", { minimumFractionDigits: 2 })} ر.س
           </span>
         </div>
 
-        <div className="flex justify-between text-lg font-bold pt-4 border-t border-border/50">
-          <span>الإجمالي النهائي</span>
-          <span className="text-primary">
-            {totals.final.toLocaleString("ar-SA", { minimumFractionDigits: 2 })}
-          </span>
+        <div className="flex justify-between items-start pt-2">
+          <span className="text-lg font-bold">الإجمالي الكلي:</span>
+          <div className="flex flex-col items-end">
+            <span className="text-2xl font-bold text-[#004b93]">
+              {totals.final.toLocaleString("ar-SA", { minimumFractionDigits: 2 })}
+            </span>
+            <span className="text-[10px] text-muted-foreground mt-1">العملة: الريال السعودي (SAR)</span>
+          </div>
         </div>
       </div>
     </div>

@@ -51,10 +51,6 @@ export function Step2Form() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between border-b border-border pb-4">
-        <h2 className="text-lg font-bold text-foreground">بنود الفاتورة</h2>
-      </div>
-
       <FormProvider {...form}>
         <Form {...form}>
           <form className="space-y-4">

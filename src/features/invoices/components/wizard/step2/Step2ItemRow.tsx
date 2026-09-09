@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormContext, useWatch } from "react-hook-form";
-import { AlertCircle, Trash2 } from "lucide-react";
+import { Trash2, AlertCircle, Laptop, Printer, Server, Minus, Plus } from "lucide-react";
 import { TableRow, TableCell } from "@/components/ui/table";
 import { FormField, FormItem, FormControl } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 import { Step2FormValues } from "../../../schemas/step2Schema";
 import { mockInventory } from "../../../data/mockInventory";
@@ -41,59 +42,77 @@ export function Step2ItemRow({
   const p = Number(currentItem?.price) || 0;
   const d = Number(currentItem?.discount) || 0;
   const t = Number(currentItem?.taxPercent) || 0;
-  const rowTotal = Math.max(0, q * p - d) * (1 + t / 100);
+  
+  // Calculate row total: Price * Quantity - (Discount as percentage of subtotal)
+  // Wait, in screenshot, is discount % or fixed?
+  // Let's assume % based on header "الخصم (%)"
+  const subtotal = q * p;
+  const discountAmount = subtotal * (d / 100);
+  const rowTax = Math.max(0, subtotal - discountAmount) * (t / 100);
+  const rowTotal = Math.max(0, subtotal - discountAmount) + rowTax;
 
-  const isOverStock =
-    currentItem?.itemId && q > (currentItem?.availableStock || 0);
+  const availableStock = currentItem?.availableStock || 0;
+  const isOverStock = currentItem?.itemId && q > availableStock;
+
+  const getProductIcon = (sku?: string) => {
+    if (sku?.includes("LPT")) return <Laptop className="w-5 h-5 text-muted-foreground" />;
+    if (sku?.includes("PRN")) return <Printer className="w-5 h-5 text-muted-foreground" />;
+    return <Server className="w-5 h-5 text-muted-foreground" />;
+  };
+
+  const handleIncrement = () => {
+    setValue(`items.${index}.quantity`, q + 1, { shouldValidate: true, shouldDirty: true });
+  };
+
+  const handleDecrement = () => {
+    if (q > 1) {
+      setValue(`items.${index}.quantity`, q - 1, { shouldValidate: true, shouldDirty: true });
+    }
+  };
 
   return (
-    <TableRow key={fieldId} className="group">
-      {/* Item ID */}
-      <TableCell>
-        <FormField
-          control={control}
-          name={`items.${index}.itemId`}
-          render={({ field: formField }) => (
-            <FormItem>
-              <FormControl>
-                <Input
-                  {...formField}
-                  readOnly
-                  className="bg-muted text-muted-foreground h-9"
-                  placeholder="-"
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
+    <TableRow key={fieldId} className="group h-[72px]">
+      {/* Index */}
+      <TableCell className="text-center font-medium text-muted-foreground w-12">
+        {index + 1}
       </TableCell>
 
-      {/* Item Name (Select from Mock) */}
+      {/* Product / Service */}
       <TableCell>
         <FormField
           control={control}
           name={`items.${index}.itemId`}
           render={({ field: formField }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <Select
                 onValueChange={(val) => {
                   const product = mockInventory.find((p) => p.id === val);
                   if (product) {
                     formField.onChange(product.id);
+                    setValue(`items.${index}.sku`, product.sku);
                     setValue(`items.${index}.name`, product.name);
                     setValue(`items.${index}.price`, product.price);
                     setValue(`items.${index}.taxPercent`, product.taxPercent);
-                    setValue(
-                      `items.${index}.availableStock`,
-                      product.availableStock
-                    );
+                    setValue(`items.${index}.availableStock`, product.availableStock);
                   }
                 }}
                 value={formField.value}
               >
                 <FormControl>
-                  <SelectTrigger className="h-9">
-                    <SelectValue placeholder="اختر الصنف..." />
+                  <SelectTrigger className="h-14 border-0 hover:bg-muted/50 p-2 px-0 bg-transparent shadow-none focus:ring-0">
+                    <div className="flex items-center gap-3 text-right">
+                      <div className="w-10 h-10 rounded-md border border-border flex items-center justify-center bg-muted/20 shrink-0">
+                        {getProductIcon(currentItem?.sku)}
+                      </div>
+                      <div className="flex flex-col gap-1 items-start">
+                        <SelectValue placeholder="اختر المنتج..." />
+                        {currentItem?.itemId && (
+                          <span className={`text-[11px] font-medium ${availableStock <= 5 ? 'text-destructive' : 'text-emerald-600'}`}>
+                            {availableStock <= 5 ? `متوفر ${availableStock} وحدات فقط` : `متوفر ${availableStock} وحدة`}
+                          </span>
+                        )}
+                      </div>
+                    </div>
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -109,32 +128,53 @@ export function Step2ItemRow({
         />
       </TableCell>
 
-      {/* Quantity */}
+      {/* SKU */}
+      <TableCell className="text-center text-muted-foreground font-medium text-sm">
+        {currentItem?.sku || "-"}
+      </TableCell>
+
+      {/* Quantity with +/- */}
       <TableCell>
         <FormField
           control={control}
           name={`items.${index}.quantity`}
           render={({ field: formField }) => (
             <FormItem>
-              <FormControl>
-                <Input
-                  type="number"
-                  min={1}
-                  className={`h-9 ${
-                    isOverStock
-                      ? "border-destructive focus-visible:ring-destructive"
-                      : ""
-                  }`}
-                  {...formField}
-                  onChange={(e) => formField.onChange(Number(e.target.value))}
-                />
-              </FormControl>
-              {isOverStock && (
-                <div className="absolute mt-1 text-[10px] text-destructive flex items-center whitespace-nowrap">
-                  <AlertCircle className="w-3 h-3 ml-1" />
-                  الكمية تتجاوز المخزون (المتاح: {currentItem?.availableStock})
-                </div>
-              )}
+              <TooltipProvider delay={0}>
+                <Tooltip open={!!isOverStock}>
+                  <TooltipTrigger>
+                    <FormControl>
+                      <div className={`flex items-center border rounded-md h-10 overflow-hidden ${isOverStock ? 'border-destructive ring-1 ring-destructive' : 'border-border'}`}>
+                        <button
+                          type="button"
+                          onClick={handleIncrement}
+                          className="w-10 h-full flex items-center justify-center hover:bg-muted text-muted-foreground transition-colors"
+                        >
+                          <Plus className="w-4 h-4" />
+                        </button>
+                        <Input
+                          type="number"
+                          min={1}
+                          className="h-full border-0 rounded-none text-center focus-visible:ring-0 w-full px-0"
+                          {...formField}
+                          onChange={(e) => formField.onChange(Number(e.target.value))}
+                        />
+                        <button
+                          type="button"
+                          onClick={handleDecrement}
+                          className="w-10 h-full flex items-center justify-center hover:bg-muted text-muted-foreground transition-colors border-r border-border"
+                        >
+                          <Minus className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </FormControl>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="bg-destructive/10 text-destructive border-destructive/20 font-medium px-3 py-1.5 flex items-center gap-1.5 mt-1">
+                    <AlertCircle className="w-4 h-4" />
+                    رسالة تحذير: الكمية المطلوبة تتجاوز المخزون المتاح
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </FormItem>
           )}
         />
@@ -148,20 +188,25 @@ export function Step2ItemRow({
           render={({ field: formField }) => (
             <FormItem>
               <FormControl>
-                <Input
-                  type="number"
-                  min={0}
-                  className="h-9"
-                  {...formField}
-                  onChange={(e) => formField.onChange(Number(e.target.value))}
-                />
+                <div className="flex h-10 w-full items-center border border-border rounded-md overflow-hidden bg-background focus-within:ring-1 focus-within:ring-ring">
+                  <Input
+                    type="number"
+                    min={0}
+                    className="flex-1 h-full border-0 rounded-none text-center focus-visible:ring-0 px-2"
+                    {...formField}
+                    onChange={(e) => formField.onChange(Number(e.target.value))}
+                  />
+                  <div className="h-full px-3 flex items-center justify-center bg-muted/50 border-r border-border text-xs font-medium text-muted-foreground whitespace-nowrap">
+                    ر.س
+                  </div>
+                </div>
               </FormControl>
             </FormItem>
           )}
         />
       </TableCell>
 
-      {/* Discount */}
+      {/* Discount % */}
       <TableCell>
         <FormField
           control={control}
@@ -172,7 +217,8 @@ export function Step2ItemRow({
                 <Input
                   type="number"
                   min={0}
-                  className="h-9"
+                  max={100}
+                  className="h-10 text-center"
                   {...formField}
                   onChange={(e) => formField.onChange(Number(e.target.value))}
                 />
@@ -182,43 +228,29 @@ export function Step2ItemRow({
         />
       </TableCell>
 
-      {/* Tax Percent */}
-      <TableCell>
-        <FormField
-          control={control}
-          name={`items.${index}.taxPercent`}
-          render={({ field: formField }) => (
-            <FormItem>
-              <FormControl>
-                <Input
-                  type="number"
-                  className="h-9 bg-muted"
-                  readOnly
-                  {...formField}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
+      {/* Tax */}
+      <TableCell className="text-center font-medium text-muted-foreground">
+        {rowTax.toLocaleString("ar-SA", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}
       </TableCell>
 
       {/* Row Total */}
-      <TableCell>
-        <div className="h-9 flex items-center px-3 font-medium">
-          {rowTotal.toLocaleString("ar-SA", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}
-        </div>
+      <TableCell className="text-center font-bold text-foreground">
+        {rowTotal.toLocaleString("ar-SA", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}
       </TableCell>
 
       {/* Actions */}
-      <TableCell>
+      <TableCell className="text-center">
         <Button
           type="button"
           variant="ghost"
           size="icon"
-          className="h-9 w-9 text-muted-foreground hover:text-destructive"
+          className="h-9 w-9 text-destructive hover:bg-destructive/10 hover:text-destructive"
           onClick={onRemove}
           disabled={!canRemove}
         >
